@@ -18,7 +18,11 @@ public class AuthService
 
     public async Task<UserDto?> Register(UserLogin request)
     {
+        var requestedUser = await _userRepository.Find(request.Username);
+        if (requestedUser is not null) return null;
+        
         CreatePasswordHash(request.Password, out var hash, out var salt);
+        
         var newUser = new User
         {
             Username = request.Username,
@@ -74,7 +78,7 @@ public class AuthService
         var token = new JwtSecurityToken(
             claims: claims,
             signingCredentials: credentials,
-            expires: DateTime.Now.AddMinutes(15)
+            expires: DateTime.Now.AddDays(1)
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);

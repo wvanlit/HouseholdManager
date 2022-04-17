@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   ColorScheme,
   ColorSchemeProvider,
@@ -10,32 +10,29 @@ import AuthorisedRoute from "components/Auth/AuthorisedRoute"
 import UserLogin from "pages/UserLogin"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
+import { ProvideRoute, useRoute } from "hooks/useRoute"
+import { useColorScheme } from "@mantine/hooks"
+import RootProvider from "components/RootProvider"
+import HouseholdContainer from "components/Household/HouseholdContainer"
+
+const routes: Record<string, React.ReactNode> = {
+  Household: <HouseholdContainer />,
+  Recipes: "recipes",
+  Task_List: "task list",
+}
 
 function App() {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light")
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"))
-
-  const queryClient = new QueryClient({})
+  const { route } = useRoute()
 
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}>
-      <MantineProvider theme={{ colorScheme }}>
-        {/* @ts-ignore - Types not up to date yet with React 18 */}
-        <QueryClientProvider client={queryClient}>
-          <ProvideAuth>
-            <Layout>
-              <AuthorisedRoute loginFallback={<UserLogin />}>
-                Authorised!
-              </AuthorisedRoute>
-              <ReactQueryDevtools />
-            </Layout>
-          </ProvideAuth>
-        </QueryClientProvider>
-      </MantineProvider>
-    </ColorSchemeProvider>
+    <Layout tabs={Object.keys(routes).map(r => r.replace("_", " "))}>
+      <AuthorisedRoute loginFallback={<UserLogin />}>
+        {Object.keys(routes).includes(route)
+          ? routes[route]
+          : "404: Page not Found " + route}
+      </AuthorisedRoute>
+      <ReactQueryDevtools />
+    </Layout>
   )
 }
 

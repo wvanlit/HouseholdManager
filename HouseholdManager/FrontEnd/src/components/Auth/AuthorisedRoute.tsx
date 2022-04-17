@@ -1,9 +1,9 @@
 import { Container } from "@mantine/core"
 import { useAuth } from "hooks/useAuth"
 import React, { FC } from "react"
+import { FCWithChildren } from "types/react"
 
-const AuthorisedRoute: FC<{
-  children: React.ReactNode
+const AuthorisedRoute: FCWithChildren<{
   loginFallback: React.ReactNode
 }> = ({ children, loginFallback }) => {
   const auth = useAuth()

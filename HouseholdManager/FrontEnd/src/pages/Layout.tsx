@@ -2,24 +2,21 @@ import { AppShell, Container, createStyles, Menu } from "@mantine/core"
 import { useAuth } from "hooks/useAuth"
 import React, { FC } from "react"
 import { Login, Logout, Settings } from "tabler-icons-react"
+import { FCWithChildren } from "types/react"
 import Header from "../components/Header"
 
-const useStyles = createStyles(theme => ({}))
-
 interface LayoutProps {
-  children: React.ReactNode
+  tabs: string[]
 }
 
-const Layout: FC<LayoutProps> = ({ children }) => {
+const Layout: FCWithChildren<LayoutProps> = ({ tabs, children }) => {
   const auth = useAuth()
 
   return (
     <AppShell
       header={
         <Header
-          tabs={
-            auth.user !== undefined ? ["Household", "Recipes", "Tasks"] : []
-          }
+          tabs={auth.user !== undefined ? tabs : []}
           menu={{
             username: auth.user?.username ?? "Guest",
             items: (

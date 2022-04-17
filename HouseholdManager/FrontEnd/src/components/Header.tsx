@@ -8,6 +8,7 @@ import {
   Text,
   UnstyledButton,
 } from "@mantine/core"
+import { useRoute } from "hooks/useRoute"
 import React, { FC, useState } from "react"
 import { ChevronDown } from "tabler-icons-react"
 import ServerStatus from "./ServerStatus"
@@ -106,6 +107,7 @@ interface HeaderProps {
 }
 
 const Header: FC<HeaderProps> = ({ tabs, menu }) => {
+  const { route, setRoute } = useRoute()
   const { classes, theme, cx } = useStyles()
 
   const [userMenuOpened, setUserMenuOpened] = useState(false)
@@ -148,6 +150,10 @@ const Header: FC<HeaderProps> = ({ tabs, menu }) => {
       <Container>
         {tabs.length > 0 ? (
           <Tabs
+            active={
+              tabs.findIndex(r => r === route.replace("_", " ")) ?? tabs[0]
+            }
+            onTabChange={(index, key) => setRoute(tabs[index])}
             classNames={{
               root: classes.tabs,
               tabsListWrapper: classes.tabsList,

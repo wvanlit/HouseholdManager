@@ -10,6 +10,7 @@ import React, {
   useState,
 } from "react"
 import { useMutation, UseMutationResult } from "react-query"
+import { FCWithChildren } from "types/react"
 
 export interface AuthContext {
   user: User | undefined
@@ -98,9 +99,7 @@ export function useProvideAuth(): AuthContext {
   }
 }
 
-export const ProvideAuth: FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const ProvideAuth: FCWithChildren<{}> = ({ children }) => {
   const auth = useProvideAuth()
   return <authContext.Provider value={auth}>{children}</authContext.Provider>
 }

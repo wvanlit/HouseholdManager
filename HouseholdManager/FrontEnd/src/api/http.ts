@@ -7,3 +7,17 @@ export async function post(endpoint: string, body: object) {
     body: JSON.stringify(body),
   })
 }
+
+export async function authenticatedFetch(
+  input: RequestInfo,
+  init: RequestInit | undefined,
+  jwt: string
+) {
+  return await fetch(input, {
+    headers: {
+      Accept: "application/json, text/plain, */*",
+      Authorization: `bearer ${jwt}`,
+    },
+    ...init,
+  })
+}

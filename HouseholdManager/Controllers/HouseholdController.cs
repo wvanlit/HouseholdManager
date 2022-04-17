@@ -23,10 +23,19 @@ public class HouseholdController : ControllerBase
         return Ok(household);
     }
     
+    [HttpGet("user/{username}")]
+    public async Task<ActionResult<List<HouseholdDto>>> GetUserHouseholds(string username)
+    {
+        var households = await _householdService.FindUserHouseholds(username);
+        return Ok(households);
+    }
+    
     [HttpPost("create")]
     public async Task<ActionResult<HouseholdDto>> CreateHousehold(HouseholdDto dto)
     {
         var household = await _householdService.CreateNewHousehold(dto);
         return RedirectToAction(nameof(GetHousehold), "Household",new {id = household.Id});
     }
+
+    
 }

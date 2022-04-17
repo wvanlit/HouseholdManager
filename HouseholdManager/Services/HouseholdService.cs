@@ -19,6 +19,12 @@ public class HouseholdService
         if (household is null) return null;
         return ToHouseholdDto(household);
     }
+    
+    public async Task<List<HouseholdDto>> FindUserHouseholds(string username)
+    {
+        var households = await _householdRepository.Where(h => h.Users.Any(user => user.Username == username)).ToListAsync();
+        return households.ConvertAll(ToHouseholdDto);
+    }
 
     public async Task<HouseholdDto> CreateNewHousehold(HouseholdDto dto)
     {
