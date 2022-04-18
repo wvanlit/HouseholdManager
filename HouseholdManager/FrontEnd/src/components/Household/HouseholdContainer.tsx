@@ -1,23 +1,18 @@
-import { Code } from "@mantine/core"
+import { Code, Container, Stack } from "@mantine/core"
 import { useAuth } from "hooks/useAuth"
-import { getHouseholdAPI } from "hooks/useHousehold"
+import { useHouseholdAPI } from "hooks/useHousehold"
 import React from "react"
 import { useQuery } from "react-query"
 import { FCWithChildren } from "types/react"
+import HouseholdList from "./HouseholdList"
 
 const HouseholdContainer: FCWithChildren<{}> = ({}) => {
   const { user } = useAuth()
-  const { getUserHouseholds } = getHouseholdAPI()
+  const { getUserHouseholds } = useHouseholdAPI()
 
   const households = getUserHouseholds(user?.username!)
 
-  return (
-    <div>
-      HouseholdContainer
-      <Code block>{JSON.stringify(households.data)}</Code>
-      <Code block>{(households.error as Error)?.message}</Code>
-    </div>
-  )
+  return <HouseholdList households={households.data ?? []} />
 }
 
 export default HouseholdContainer

@@ -8,5 +8,11 @@ public class HouseholdRepository : BaseRepository<Household>
     {
     }
     
-    
+    public async Task<Household?> GetHousehold(int id)
+    {
+        var household = await Ctx.Households
+            .Include(h => h.Users)
+            .FirstOrDefaultAsync(h => h.Id == id);
+        return household;
+    }
 }

@@ -1,4 +1,4 @@
-import { Box, Button, Group, Stack, TextInput } from "@mantine/core"
+import { Box, Button, Group, PasswordInput, Stack, TextInput } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import { useAuth } from "hooks/useAuth"
 
@@ -25,11 +25,10 @@ const LoginForm = () => {
             placeholder="You!"
             {...form.getInputProps("username")}
           />
-          <TextInput
+          <PasswordInput
             required
             label="Password"
             placeholder="hunter2"
-            type="password"
             {...form.getInputProps("password")}
           />
 

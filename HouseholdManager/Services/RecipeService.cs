@@ -11,11 +11,12 @@ public class RecipeService
         _recipeRepository = recipeRepository;
     }
 
-    public async Task<RecipeList> CreateNew(int householdId)
+    public async Task<RecipeList> CreateNew(int householdId, string name)
     {
         var recipeList = new RecipeList()
         {
             HouseholdId = householdId,
+            Name = name,
             Recipes = new List<Recipe>()
         };
         return await _recipeRepository.CreateList(recipeList);
@@ -24,6 +25,11 @@ public class RecipeService
     public async Task<RecipeList?> GetList(int id)
     {
         return await _recipeRepository.GetList(id);
+    }
+
+    public async Task<List<RecipeList>> GetHouseholdLists(int householdId)
+    {
+        return await _recipeRepository.GetListsFromHousehold(householdId);
     }
 
     public async Task<Recipe?> AddRecipe(int listId, Recipe recipe)

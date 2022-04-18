@@ -9,10 +9,12 @@ namespace HouseholdManager.Controllers;
 public class RecipeController : ControllerBase
 {
     private readonly RecipeService _recipeService;
+    private readonly HouseholdService _householdService;
 
-    public RecipeController(RecipeService recipeService)
+    public RecipeController(RecipeService recipeService, HouseholdService householdService)
     {
         _recipeService = recipeService;
+        _householdService = householdService;
     }
 
     [HttpGet("list/{id:int}")]
@@ -22,11 +24,11 @@ public class RecipeController : ControllerBase
         return list == null ? NotFound() : Ok(list);
     }
 
-    [HttpPost("list")]
-    public async Task<ActionResult<RecipeList>> CreateList(int householdId)
+    [HttpPost("list/{householdId:int}/{name}")]
+    public async Task<ActionResult<RecipeList>> CreateList(int householdId, string name)
     {
         // TODO check if user belongs to household
-        return Ok(await _recipeService.CreateNew(householdId));
+        return Ok(await _recipeService.CreateNew(householdId, name));
     }
     
     [HttpPost("recipe")]
@@ -60,5 +62,19 @@ public class RecipeController : ControllerBase
         {
             return BadRequest(ae.Message);
         }
+    }
+
+    [HttpGet("household/{householdId:int}")]
+    public async Task<ActionResult<List<RecipeList>>> GetHouseholdRecipeLists(int householdId)
+    {
+        var authenticatedUser = HttpContext.User.Identity?.Name;
+        if (authenticatedUser is null)
+            return Forbid("User not authorized");
+
+        var userHouseholds = await _householdService.FindUserHouseholds(authenticatedUser);
+        if (userHouseholds.All(h => h.Id != householdId))
+            return Forbid("User not part of given household");
+        
+        return await _recipeService.GetHouseholdLists(householdId);
     }
 }

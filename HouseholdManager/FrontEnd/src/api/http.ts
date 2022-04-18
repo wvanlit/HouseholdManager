@@ -14,10 +14,11 @@ export async function authenticatedFetch(
   jwt: string
 ) {
   return await fetch(input, {
+    ...init,
     headers: {
       Accept: "application/json, text/plain, */*",
       Authorization: `bearer ${jwt}`,
+      ...init?.headers,
     },
-    ...init,
   })
 }

@@ -118,7 +118,9 @@ const Header: FC<HeaderProps> = ({ tabs, menu }) => {
       <Container className={classes.topSection}>
         <Group position="apart">
           <Group spacing={6} align="center">
-            <Title className={classes.title}>Household Manager</Title>
+            <Title className={classes.title} sx={{ fontStyle: "italic" }}>
+              Vilicus
+            </Title>
             <ServerStatus />
           </Group>
 
@@ -133,7 +135,8 @@ const Header: FC<HeaderProps> = ({ tabs, menu }) => {
               <UnstyledButton
                 className={cx(classes.user, {
                   [classes.userActive]: userMenuOpened,
-                })}>
+                })}
+              >
                 <Group spacing={4}>
                   <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
                     {menu.username}
@@ -141,7 +144,8 @@ const Header: FC<HeaderProps> = ({ tabs, menu }) => {
                   <ChevronDown size={12} />
                 </Group>
               </UnstyledButton>
-            }>
+            }
+          >
             {menu.items}
           </Menu>
         </Group>
@@ -150,16 +154,16 @@ const Header: FC<HeaderProps> = ({ tabs, menu }) => {
       <Container>
         {tabs.length > 0 ? (
           <Tabs
-            active={
-              tabs.findIndex(r => r === route.replace("_", " ")) ?? tabs[0]
-            }
-            onTabChange={(index, key) => setRoute(tabs[index])}
+            active={tabs.findIndex(r => r === route.replaceAll("_", " ")) + 1 ?? 0}
+            onTabChange={(index, key) => setRoute(tabs[index - 1] ?? "")}
             classNames={{
               root: classes.tabs,
               tabsListWrapper: classes.tabsList,
               tabControl: classes.tabControl,
               tabActive: classes.tabControlActive,
-            }}>
+            }}
+          >
+            <Tabs.Tab label="Home" key={"Home"} />
             {tabs.map(t => (
               <Tabs.Tab label={t} key={t} />
             ))}

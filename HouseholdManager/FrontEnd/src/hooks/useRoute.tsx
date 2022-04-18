@@ -22,7 +22,7 @@ export const useProvideRoute = (): Route => {
   return {
     route: route,
     setRoute: route => {
-      setHash(route.replace(" ", "_"))
+      setHash(route.replaceAll(" ", "_"))
     },
   }
 }

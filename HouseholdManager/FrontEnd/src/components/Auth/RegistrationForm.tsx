@@ -5,10 +5,12 @@ import {
   Code,
   Divider,
   Group,
+  PasswordInput,
   Stack,
   TextInput,
 } from "@mantine/core"
 import { useForm } from "@mantine/form"
+import ErrorAlert from "components/ErrorAlert"
 import { useAuth } from "hooks/useAuth"
 import React, { useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
@@ -35,20 +37,13 @@ const RegistrationForm = () => {
 
   return (
     <>
-      {register.error === null ? undefined : (
-        <Alert
-          color="red"
-          variant="filled"
-          sx={{ overflow: "auto" }}
-          title="Error on registering user"
-          children={<Code block>{(register.error as Error).message}</Code>}
-        />
-      )}
+      <ErrorAlert error={register.error as Error} />
       <Box sx={{ width: "100%", maxWidth: "55ch", marginInline: "auto" }}>
         <form
           onSubmit={form.onSubmit(values => {
             register.mutate(values)
-          })}>
+          })}
+        >
           <Stack align={"right"} spacing={4}>
             <Divider label="Account Information" labelPosition="center" />
             <TextInput
@@ -58,21 +53,19 @@ const RegistrationForm = () => {
               {...form.getInputProps("username")}
             />
             <Divider label="Password" labelPosition="center" />
-            <TextInput
+            <PasswordInput
               required
               label="Password"
               placeholder="hunter2"
-              type="password"
               {...form.getInputProps("password")}
               onBlur={() => {
                 form.validateField("password")
               }}
             />
-            <TextInput
+            <PasswordInput
               required
               label="Confirm Password"
               placeholder="hunter2"
-              type="password"
               {...form.getInputProps("passwordRepeated")}
               onBlur={() => {
                 form.validateField("passwordRepeated")

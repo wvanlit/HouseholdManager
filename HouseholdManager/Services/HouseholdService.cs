@@ -47,14 +47,38 @@ public class HouseholdService
         return ToHouseholdDto((await _householdRepository.Find(household.Id))!);
     }
 
+    public async Task<bool> DeleteHousehold(int id)
+    {
+        var household = await _householdRepository.Find(id);
+        if(household is null) return false;
+        await _householdRepository.Delete(household);
+        return true;
+    }
+
     public async Task AddHouseholdMember(int householdId, string username)
     {
-        var household = await _householdRepository.Find(householdId);
+        var household = await _householdRepository.GetHousehold(householdId);
         var user = await _userRepository.Find(username);
 
-        if (household is null || user is null) return;
-
+        if (user is null) throw new ArgumentException($"User {username} does not exist");
+        if (household is null) throw new ArgumentException($"Household with Id {householdId} does not exist");
+        
+        
         household.Users.Add(user);
+
+        await _householdRepository.Update(household);
+    }
+    
+    public async Task RemoveHouseholdMember(int householdId, string username)
+    {
+        var household = await _householdRepository.GetHousehold(householdId);
+        var user = await _userRepository.Find(username);
+
+        if (user is null) throw new ArgumentException($"User {username} does not exist");
+        if (household is null) throw new ArgumentException($"Household with Id {householdId} does not exist");
+        
+        
+        household.Users.Remove(user);
 
         await _householdRepository.Update(household);
     }

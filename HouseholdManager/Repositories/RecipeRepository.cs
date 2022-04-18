@@ -27,14 +27,22 @@ public class RecipeRepository
             .FirstOrDefaultAsync(l => l.Id == id);
         return recipeList;
     }
-    
+
+    public async Task<List<RecipeList>> GetListsFromHousehold(int householdId)
+    {
+        return await _ctx.RecipeLists
+            .Where(r => r.HouseholdId == householdId)
+            .Include(r => r.Recipes)
+            .ThenInclude(r => r.Ingredients).ToListAsync();
+    }
+
     public async Task<Recipe?> AddRecipe(int listId, Recipe recipe)
     {
         var recipeList = await GetList(listId);
         if (recipeList == null) return null;
         var foundRecipe = recipeList.Recipes.Find(r => r.Name == recipe.Name);
         if (foundRecipe != null) throw new ArgumentException($"Recipe '{recipe.Name}' already exists");
-        
+
         _ctx.Update(recipeList);
 
         recipeList.Recipes.Add(recipe);
@@ -52,11 +60,11 @@ public class RecipeRepository
 
         var foundIngredient = recipe.Ingredients.Find(i => i.Name == ingredient.Name);
         if (foundIngredient != null) throw new ArgumentException($"Ingredient '{ingredient.Name}' already exists");
-        
+
         _ctx.Recipes.Update(recipe);
-        
+
         recipe.Ingredients.Add(ingredient);
-        
+
         await _ctx.SaveChangesAsync();
 
         return ingredient;
